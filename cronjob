@@ -1,0 +1,1 @@
+0 10 * * * /usr/local/bin/nrd.sh
