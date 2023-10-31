@@ -128,13 +128,26 @@ You can use the **PAID_WHOISDS_USERNAME** and **PAID_WHOISDS_PASSWORD** variable
    ```sh
    docker run -d nrd-db --env PAID_WHOISDS_USERNAME=ThreatHunter --env PAID_WHOISDS_PASSWORD=NeRD
    ```
-To use the NRD-db Docker image with a 7-day day range and mount the current directory to /opt/nrd to access the script's output, you can run the following command:
+With this **docker-compose.yml** example, you can easily launch the NRD-db service with following:
   ```sh
-  docker run -d \
-  --name nrd-db \
-  -e DAY_RANGE=7 \
-  -v /path/to/your/data:/opt/nrd \
-  nrd-db
+version: '3'
+
+services:
+  nrd:
+    image: nrd
+    build: ./Dockerfile
+    container_name: nrd
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./nrd/:/root/redis
+      - ./nrd/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./nrd/collection/:/opt/nrd/
+    environment:
+      - REDIS_PASSWORD=my-password
+      - REDIS_PORT=6379
+      - REDIS_DATABASES=1
   ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
