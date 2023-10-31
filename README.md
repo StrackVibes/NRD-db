@@ -114,7 +114,7 @@ You can customize the NRD fetching and storage process by setting environment va
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-### **Note**: By default, The docker container will run pull the NRDs at 0800 UTC.
+### **Note**: By default, The docker container will pull the NRDs at 0800 UTC according to the cronjob.
 
 After configuring the environment variables, simply run the NRD-db Docker container, and it will start fetching newly registered domains based on the default variables in nrd.sh.
    ```sh
