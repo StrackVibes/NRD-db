@@ -2,7 +2,6 @@ Copyright (c) 2023, StrackVibes
 All rights reserved.
 
 Chicken Dance License v0.2
-http://supertunaman.com/cdl/
 
 Redistribution and use in source and binary forms, with 
 or without modification, are permitted provided that the 
@@ -15,7 +14,7 @@ following conditions are met:
         above copyright notice, this list of conditions and 
         the following disclaimer in the documentation and/or 
         other materials provided with the distribution.
-    3. Neither the name of the <ORGANIZATION> nor the names 
+    3. Neither the name of StrackVibes nor the names 
         of its contributors may be used to endorse or promote 
         products derived from this software without specific 
         prior written permission.
@@ -35,24 +34,24 @@ following conditions are met:
                 must be recorded performing the full Chicken Dance, 
                 in an original video at the entity's own expense,
                 and a video encoded in OGG Theora format or a format
-                and codec specified by <OWNER>, at least three (3) 
-                minutes in length, must be submitted to <OWNER>, 
-                provided <OWNER>'s contact information. Any and all
-                copyrights to this video must be transfered to 
-                <ORGANIZATION>. The dance featured in the video
-                must be based upon the instructions on how to perform 
+                and codec specified by StrackVibes, at least three (3) 
+                minutes in length must be submitted to StrackVibes, 
+                provided StrackVibes's contact information. Any and all
+                copyrights to this video must be transferred to 
+                StrackVibes. The dance featured in the video
+                must be based on the instructions on how to perform 
                 the Chicken Dance that you should have received with
                 this software. 
             * Any employee or person affiliated with the product 
                 must be prohibited from saying the word "gazorninplat" in 
-                public at all times, as long as distribution of the 
+                public at all times, as long as the distribution of the 
                 product continues. 
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
 "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
 LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
 FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
-COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
+COPYRIGHT HOLDERS OR CONTRIBUTORS ARE LIABLE FOR ANY DIRECT, INDIRECT, 
 INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
 BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
 LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
