@@ -16,12 +16,9 @@
 <h3 align="center">NRD-db</h3>
 
   <p align="center">
-    project_description
-    <br />
-    <a href="https://github.com/StrackVibes/NRD-db"><strong>Explore the docs »</strong></a>
+  Welcome to the NRD-db (Newly Registered Domains with Redis) GitHub repository! NRD-db is a Docker image designed to automatically fetch and store newly registered domains in a Redis database. It simplifies the process of populating a Redis database with up-to-date domain information, making it a great fit for use with Arkime's WISE tagging.
     <br />
     <br />
-    <a href="https://github.com/StrackVibes/NRD-db">View Demo</a>
     ·
     <a href="https://github.com/StrackVibes/NRD-db/issues">Report Bug</a>
     ·
@@ -61,7 +58,7 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-
+The primary objective of NRD-db is to provide an automated solution for keeping your Redis database up-to-date with newly registered domains. Searching through local text files for specific domains can be inefficient, and that's where NRD-db comes in. It fetches domain data from the WhoisDS service and stores it in a Redis database, allowing you to access this information efficiently.
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -76,50 +73,77 @@ To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
+Before you begin, ensure that you have the following dependencies installed:
+* Docker
   ```sh
-  npm install npm@latest -g
+  sudo apt install docker-ce -g
+  ```
+  NOTE: To avoid using sudo for docker activities, add your username to the Docker Group
+  ```sh
+  sudo usermod -aG docker ${USER}
   ```
 
 ### Installation
-
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+You can build and run the NRD-db Docker container using the following commands:
+1. Clone the repo
    ```sh
    git clone https://github.com/StrackVibes/NRD-db.git
    ```
-3. Install NPM packages
+2. Build the Docker image
    ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
+   cd NRD-db
+   docker build -t nrd-db .
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## NRD-db variables available
 
+You can customize the NRD fetching and storage process by setting environment variables with the docker '**--env**' argument or permanently in the NRD.sh script. Here are the available variables:
+
+| NAME                     | DEFAULT VALUE   | NOTES                                                                    |
+| --------------           | --------------- | -----------------------------------------------------------------------  |
+| DIR                      | /opt/nrd        | The directory where NRD-db stores files and data.                        |
+| DAY_RANGE                | 1               | The number of days you want to fetch newly registered domains for.       |
+| DAILY_DIR                | /tmp/daily      | The directory where NRD-db stores temporary daily domain data files.     |
+| TEMP_FILE                | /tmp/nrd        | The path to the temporary file used during domain data retrieval.        |
+| PAID_WHOISDS_USERNAME    |                 | Your WhoisDS username for accessing paid data (if applicable)            |
+| PAID_WHOISDS_PASSWORD    |                 | Your WhoisDS password for accessing paid data (if applicable)            |
+| BASE_URL_FREE | [Free](https://whoisds.com/whois-database/newly-registered-domains) | The base URL for fetching newly registered domain data for free. |
+| BASE_URL_PAID | [Paid](https://whoisds.com/your-download/direct-download_file/USERNAME/PASSWORD) | The base URL for fetching newly registered domain data with your WhoisDS paid credentials.|
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
-
+After configuring the environment variables, simply run the NRD-db Docker container, and it will start fetching newly registered domains based on your chosen day range.
+   ```sh
+   docker run -d nrd-db
+   ```
+By default, NRD-db is set to fetch NRD data for the last 1 day. You can adjust the **DAY_RANGE** variable to specify a different day range.
+   ```sh
+   docker run -d nrd-db --env DAY_RANGE=10
+   ```
+You can use the **PAID_WHOISDS_USERNAME** and **PAID_WHOISDS_PASSWORD** variables if you have a paid WhoisDS subscription. If not, the tool will use the free data source by default.
+   ```sh
+   docker run -d nrd-db --env PAID_WHOISDS_USERNAME=ThreatHunter --env PAID_WHOISDS_PASSWORD=NeRD
+   ```
+To use the NRD-db Docker image with a 7-day day range and mount the current directory to /opt/nrd to access the script's output, you can run the following command:
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
+- [X] Scheduled Updates
+- [ ] Improved Logging
+- [ ] Retireve ...
+    - [ ] DNS Record(s) Information
+    - [ ] IP2ASN Information
+    - [ ] WHOIS Information
+    - [ ] Reverse WHOIS (by Name) Information
+    - [ ] Certficates
+    - [ ] VirusTotal Information
 
 See the [open issues](https://github.com/StrackVibes/NRD-db/issues) for a full list of proposed features (and known issues).
 
