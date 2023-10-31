@@ -34,9 +34,6 @@
   <ol>
     <li>
       <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
     </li>
     <li>
       <a href="#getting-started">Getting Started</a>
@@ -45,6 +42,7 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
+    <li><a href="#variables">Variables</a></li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
@@ -68,7 +66,6 @@ The primary objective of NRD-db is to provide an automated solution for keeping 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
 To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
@@ -97,7 +94,7 @@ You can build and run the NRD-db Docker container using the following commands:
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## NRD-db variables available
+## Variables
 
 You can customize the NRD fetching and storage process by setting environment variables with the docker '**--env**' argument or permanently in the NRD.sh script. Here are the available variables:
 
@@ -130,6 +127,14 @@ You can use the **PAID_WHOISDS_USERNAME** and **PAID_WHOISDS_PASSWORD** variable
    docker run -d nrd-db --env PAID_WHOISDS_USERNAME=ThreatHunter --env PAID_WHOISDS_PASSWORD=NeRD
    ```
 To use the NRD-db Docker image with a 7-day day range and mount the current directory to /opt/nrd to access the script's output, you can run the following command:
+  ```sh
+  docker run -d \
+  --name nrd-db \
+  -e DAY_RANGE=7 \
+  -v /path/to/your/data:/opt/nrd \
+  nrd-db
+  ```
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ROADMAP -->
@@ -181,7 +186,7 @@ Distributed under the Chicken Dance License. See `LICENSE.md` for more informati
 <!-- CONTACT -->
 ## Contact
 
-Shane Strack - [@inshane09](https://twitter.com/inshane09) - shane.strack@hotmail.com
+Shane Strack - [@inshane09](https://twitter.com/inshane09)
 
 Project Link: [https://github.com/StrackVibes/NRD-db](https://github.com/StrackVibes/NRD-db)
 
