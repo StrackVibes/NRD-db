@@ -66,7 +66,7 @@ The primary objective of NRD-db is to provide an automated solution for keeping 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-To get a local copy up and running follow these simple example steps.
+To get a local copy up and running follow these simple example steps. 
 
 ### Prerequisites
 
@@ -114,7 +114,9 @@ You can customize the NRD fetching and storage process by setting environment va
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-After configuring the environment variables, simply run the NRD-db Docker container, and it will start fetching newly registered domains based on your chosen day range.
+### **Note**: By default, The docker container will run pull the NRDs at 0800 UTC.
+
+After configuring the environment variables, simply run the NRD-db Docker container, and it will start fetching newly registered domains based on the default variables in nrd.sh.
    ```sh
    docker run -d nrd-db
    ```
@@ -197,9 +199,8 @@ Project Link: [https://github.com/StrackVibes/NRD-db](https://github.com/StrackV
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* []()
-* []()
-* []()
+* [PeterDaveHello](https://github.com/PeterDaveHello/nrd-list-downloader)
+* [WhoisDS.com](https://www.whoisds.com/newly-registered-domains)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
