@@ -10,7 +10,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/StrackVibes/NRD-db">
-    <img src="https://i.ibb.co/bHVd4rQ/NRD-db1.png" alt="Logo" width="600" height="680">
+    <img src="https://i.ibb.co/bHVd4rQ/NRD-db1.png" alt="Logo">
   </a>
 
 <h3 align="center">NRD-db</h3>
