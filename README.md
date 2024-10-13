@@ -10,7 +10,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/StrackVibes/NRD-db">
-    <img src="NRD-DB.png" alt="Logo" width="600" height="600">
+    <img src="https://i.ibb.co/bHVd4rQ/NRD-db1.png" alt="Logo">
   </a>
 
 <h3 align="center">NRD-db</h3>
@@ -66,7 +66,7 @@ The primary objective of NRD-db is to provide an automated solution for keeping 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-To get a local copy up and running follow these simple example steps.
+To get a local copy up and running follow these simple example steps. 
 
 ### Prerequisites
 
@@ -114,7 +114,9 @@ You can customize the NRD fetching and storage process by setting environment va
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-After configuring the environment variables, simply run the NRD-db Docker container, and it will start fetching newly registered domains based on your chosen day range.
+### **Note**: By default, The docker container will pull the NRDs at 0800 UTC according to the cronjob.
+
+After configuring the environment variables, simply run the NRD-db Docker container, and it will start fetching newly registered domains based on the default variables in nrd.sh.
    ```sh
    docker run -d nrd-db
    ```
@@ -126,13 +128,26 @@ You can use the **PAID_WHOISDS_USERNAME** and **PAID_WHOISDS_PASSWORD** variable
    ```sh
    docker run -d nrd-db --env PAID_WHOISDS_USERNAME=ThreatHunter --env PAID_WHOISDS_PASSWORD=NeRD
    ```
-To use the NRD-db Docker image with a 7-day day range and mount the current directory to /opt/nrd to access the script's output, you can run the following command:
+With this **docker-compose.yml** example, you can easily launch the NRD-db service with following:
   ```sh
-  docker run -d \
-  --name nrd-db \
-  -e DAY_RANGE=7 \
-  -v /path/to/your/data:/opt/nrd \
-  nrd-db
+version: '3'
+
+services:
+  nrd:
+    image: nrd
+    build: ./Dockerfile
+    container_name: nrd
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./nrd/:/root/redis
+      - ./nrd/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./nrd/collection/:/opt/nrd/
+    environment:
+      - REDIS_PASSWORD=my-password
+      - REDIS_PORT=6379
+      - REDIS_DATABASES=1
   ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -197,9 +212,8 @@ Project Link: [https://github.com/StrackVibes/NRD-db](https://github.com/StrackV
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* []()
-* []()
-* []()
+* [PeterDaveHello](https://github.com/PeterDaveHello/nrd-list-downloader)
+* [WhoisDS.com](https://www.whoisds.com/newly-registered-domains)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
