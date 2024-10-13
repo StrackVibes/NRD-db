@@ -1,1 +1,1 @@
-0 10 * * * /usr/local/bin/nrd.sh
+0 10 * * * /usr/local/bin/nrd.sh >> /var/log/nrd-cron.log 2>&1
