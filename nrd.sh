@@ -40,6 +40,8 @@ PAID_WHOISDS_USERNAME="${PAID_WHOISDS_USERNAME:-}"
 PAID_WHOISDS_PASSWORD="${PAID_WHOISDS_PASSWORD:-}"
 BASE_URL_FREE="https://whoisds.com/whois-database/newly-registered-domains"
 BASE_URL_PAID="https://whoisds.com/your-download/direct-download_file/${PAID_WHOISDS_USERNAME}/${PAID_WHOISDS_PASSWORD}"
+START_DATE=$(date -u --date="${DAY_RANGE} days ago" +'%Y-%m-%d')
+END_DATE=$(date -u --date="yesterday" +'%Y-%m-%d')
 
 # Move to the script directory
 cd "$DIR"
@@ -54,27 +56,25 @@ function insert_into_temp_file() {
 }
 
 # Function for downloading NRD data
-# Function for downloading NRD data
 function download() {
     local TYPE="${1:-free}"
-    local TARGET_FILE="/opt/nrd/daily/$(date +'%Y-%m-%d')-nrd.txt"
+    
+    # Adjust filename based on DAY_RANGE
+    if [ "$DAY_RANGE" -gt 1 ]; then
+        local TARGET_FILE="/opt/nrd/daily/${START_DATE}_to_${END_DATE}-nrd.txt"
+    else
+        local TARGET_FILE="/opt/nrd/daily/${END_DATE}-nrd.txt"
+    fi
+
     local DOWNLOAD_DIR="${DAILY_DIR}/${TYPE}"
     mkdir -p "$DOWNLOAD_DIR"
 
     echo
     echo.Cyan "Downloading $TYPE NRD list ..."
 
-    if [ "$TYPE" = "free" ] && [ "$DAY_RANGE" -gt 10 ]; then
-        echo.Red "Warning! Free NRD list before more than 10 days might be removed from WhoisDS.com already, the download may fail."
-    fi
-
-    if [ "$TYPE" = "paid" ] && [ "$DAY_RANGE" -gt 30 ]; then
-        echo.Red "Warning! Paid NRD list before more than 30 days might be removed from WhoisDS.com already, the download may fail."
-    fi
-
     for i in $(seq "$DAY_RANGE" -1 1); do
         local DATE FILE URL
-        DATE="$(date -u --date "$i days ago" '+%Y-%m-%d')"
+        DATE="$(date -u --date "$i days ago" '+%Y-%m-%d')"  # Keep this for downloading the correct day
         FILE="${DOWNLOAD_DIR}/${DATE}"
 
         if [ -s "$FILE" ] && [ "$(grep -vc '^$' "$FILE")" -ge 1 ]; then
@@ -95,17 +95,12 @@ function download() {
         awk -F ' ' 'FNR>1 { if(!$0){$0="NA"}; printf("SET %s '$DATE' \n",$0)}' "$FILE" | redis-cli
     done
 
-    # Move temporary file to target folder and delete the temp file after moving
     chmod +r "$TEMP_FILE"
-    mv "$TEMP_FILE" "$TARGET_FILE"
+    mv "$TEMP_FILE" "$TARGET_FILE"  # Save using the correct range or single day as the filename
+
     echo.Green "NRD list for the last $DAY_RANGE days saved to $TARGET_FILE, $(grep -cvE '^(#|$)' "$TARGET_FILE") domains found."
-
-    # Remove temporary file after successful move
-    rm -f "$TEMP_FILE"
-
     echo
 }
-
 download free
 
 if [ -n "$PAID_WHOISDS_USERNAME" ] && [ -n "$PAID_WHOISDS_PASSWORD" ]; then
