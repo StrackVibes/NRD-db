@@ -54,6 +54,7 @@ function insert_into_temp_file() {
 }
 
 # Function for downloading NRD data
+# Function for downloading NRD data
 function download() {
     local TYPE="${1:-free}"
     local TARGET_FILE="/opt/nrd/daily/$(date +'%Y-%m-%d')-nrd.txt"
@@ -94,13 +95,14 @@ function download() {
         awk -F ' ' 'FNR>1 { if(!$0){$0="NA"}; printf("SET %s '$DATE' \n",$0)}' "$FILE" | redis-cli
     done
 
+    # Move temporary file to target folder and delete the temp file after moving
     chmod +r "$TEMP_FILE"
     mv "$TEMP_FILE" "$TARGET_FILE"
-
-    #while IFS= read -r line; do
-    #echo '$line' | redis-cli
-
     echo.Green "NRD list for the last $DAY_RANGE days saved to $TARGET_FILE, $(grep -cvE '^(#|$)' "$TARGET_FILE") domains found."
+
+    # Remove temporary file after successful move
+    rm -f "$TEMP_FILE"
+
     echo
 }
 
