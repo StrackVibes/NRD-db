@@ -92,7 +92,7 @@ function download() {
         fi
 
         awk -F ' ' 'FNR>1 { if(!$0){$0="NA"}; printf("%s '$DATE' \n",$0)}' "$FILE" >> "$TEMP_FILE"
-        awk -F ' ' 'FNR>1 { if(!$0){$0="NA"}; printf("SET %s '$DATE' \n",$0)}' "$FILE" | redis-cli
+        awk -F ' ' 'FNR>1 { if(!$0){$0="NA"}; printf("SET %s '$DATE' \n",$0)}' "$FILE" | /usr/local/bin/redis-cli
     done
 
     chmod +r "$TEMP_FILE"
