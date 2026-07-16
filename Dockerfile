@@ -30,3 +30,5 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Set the entry point to start Redis and cron
 CMD ["/usr/local/bin/entrypoint.sh"]
+
+
