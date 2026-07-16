@@ -1,0 +1,13 @@
+# Harvested domain lists -- not secret, just noisy/large, and not something
+# this repo should ever bulk-commit.
+daily/*.txt
+
+# Enrichment secrets and runtime state -- never committed.
+enrich/.env
+enrich/**/*.log
+enrich/.container.env
+
+# Python
+__pycache__/
+*.pyc
+enrich/**/__pycache__/

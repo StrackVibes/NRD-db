@@ -1,0 +1,5 @@
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+30 10 * * * . /app/.container.env; python3 /app/enrich_daily.py >> /var/log/enrich-daily.log 2>&1
+30 11 * * * . /app/.container.env; python3 /app/enrich_daily.py --phase dns --catchup >> /var/log/enrich-daily.log 2>&1
+0  12 * * * . /app/.container.env; python3 /app/enrich_whois.py >> /var/log/enrich-whois.log 2>&1
+*/15 * * * * . /app/.container.env; python3 /app/enrich_vt.py >> /var/log/enrich-vt.log 2>&1

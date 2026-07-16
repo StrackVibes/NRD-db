@@ -44,6 +44,7 @@
     </li>
     <li><a href="#variables">Variables</a></li>
     <li><a href="#usage">Usage</a></li>
+    <li><a href="#enrichment">Enrichment</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -152,18 +153,54 @@ services:
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!-- ENRICHMENT -->
+## Enrichment
+
+The `enrich/` directory is a separate sidecar container (`nrd-enrich`, built from `enrich/Dockerfile`) that enriches each day's newly-added domains with DNS, IP2ASN, WHOIS, Certificate Transparency, and VirusTotal data. It's kept out of the main `nrd` image on purpose: that image has no Python, and the Redis instance it runs has no auth (by default `redis.conf` isn't actually wired up, so Redis falls back to defaults — set `requirepass` if you expose port 6379 beyond a trusted network). Keeping all the new outbound-networking code in its own container limits the blast radius if any of it misbehaves.
+
+**This never touches the existing `<domain> -> registration date` keys.** Everything the enrichment pipeline writes lives under a separate `nrd:enrich:` prefix, so anything already reading the flat keys (e.g. Arkime WISE) is unaffected. To pull enrichment data into WISE, add a second WISE source pointing at the `nrd:enrich:<domain>` hash.
+
+### Redis schema
+
+`nrd:enrich:<domain>` — a Hash per domain (TTL 180 days, independent of the flat keys which never expire):
+
+| Field | Meaning |
+|---|---|
+| `dns_status`, `dns_a`, `dns_aaaa`, `dns_ns`, `dns_mx`, `dns_checked_at` | DNS resolution against public resolvers, not the host's own DNS |
+| `asn_status`, `asn_info` (JSON), `asn_checked_at` | IP2ASN via Team Cymru's bulk whois service, for domains that resolved |
+| `whois_status`, `whois_registrar`, `whois_created_date`, `whois_expires_date`, `whois_source`, `whois_attempts`, `whois_checked_at` | RDAP first, legacy port-43 WHOIS fallback |
+| `reverse_whois_status` | Always `no_provider_configured` — **no free/self-hosted reverse-WHOIS-by-name source exists.** This is a labeled stub with a config slot (`REVERSE_WHOIS_PROVIDER`/`REVERSE_WHOIS_API_KEY`) for a future paid provider (WhoisXML, SecurityTrails, DomainTools, etc.), not a working implementation. |
+| `crt_status`, `crt_cert_count`, `crt_first_seen_not_before`, `crt_latest_issuer`, `crt_checked_at` | Certificate Transparency via crt.sh's public Postgres mirror |
+| `vt_status`, `vt_malicious`, `vt_suspicious`, `vt_harmless`, `vt_checked_at` | VirusTotal — only runs at all if `VT_API_KEY` is set |
+
+`nrd:enrich:runs:<date>:<source>` — per-run counters (Hash, TTL 30 days) for observability without scanning every domain hash.
+
+### Honest coverage caveats
+
+This pipeline processes ~70,000 domains/day. DNS and IP2ASN are free, bulk-safe, and cover the full daily cohort. **WHOIS and VirusTotal do not** — full same-day coverage isn't realistic (or safe) against free/rate-limited registries and VirusTotal's public API tier:
+
+- **WHOIS** works a rolling lookback window (`WHOIS_LOOKBACK_DAYS`, default 3 days) with a per-registry-host rate limit and circuit breaker, so most registries only ever see a couple of requests a second at most. Many domains will simply stay `whois_status=not_attempted` or `unsupported_tld` — that's expected, not a bug.
+- **VirusTotal** is fully optional (`VT_API_KEY` unset ⇒ zero requests, every domain marked `vt_status=no_api_key`) and, even with a key, defaults to VT's public free-tier limits (4 req/min, 500/day) — nowhere near enough to cover 70k domains/day. It prioritizes domains that actually resolved over ones that don't, and the rest are left `not_attempted`.
+- **Reverse WHOIS by name** has no free source at all; see the schema table above.
+
+### Configuration
+
+All tunables are env vars read by `enrich/config.py`, set via the `nrd-enrich` service's `environment:` block in the outer `docker-compose.yml` (or a gitignored `enrich/.env`, see `enrich/.env.example`). Notable ones: `VT_API_KEY`, `VT_REQ_PER_MIN`, `VT_REQ_PER_DAY`, `WHOIS_LOOKBACK_DAYS`, `WHOIS_GLOBAL_CONCURRENCY`, `DNS_CONCURRENCY`, `ENRICH_TTL_DAYS`. See `enrich/config.py` for the full list and defaults.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 <!-- ROADMAP -->
 ## Roadmap
 
 - [X] Scheduled Updates
 - [ ] Improved Logging
-- [ ] Retireve ...
-    - [ ] DNS Record(s) Information
-    - [ ] IP2ASN Information
-    - [ ] WHOIS Information
-    - [ ] Reverse WHOIS (by Name) Information
-    - [ ] Certficates
-    - [ ] VirusTotal Information
+- [X] Retrieve ...
+    - [X] DNS Record(s) Information
+    - [X] IP2ASN Information
+    - [X] WHOIS Information
+    - [ ] Reverse WHOIS (by Name) Information — no free/self-hosted source exists; stub only, needs a paid provider (see [Enrichment](#enrichment))
+    - [X] Certificates
+    - [X] VirusTotal Information — optional, gated on `VT_API_KEY`; free-tier coverage is necessarily partial
 
 See the [open issues](https://github.com/StrackVibes/NRD-db/issues) for a full list of proposed features (and known issues).
 

@@ -1,0 +1,39 @@
+# Paste this block into /home/falco/docker/docker-compose.yml, as a new
+# top-level entry under `services:` (e.g. right after the existing `nrd:`
+# service, matching its `#\n#\n#` separator style). Do not replace or
+# reorder any existing service -- this is additive only.
+#
+#
+#
+  nrd-enrich:
+    build:
+      context: ./NRD-db/enrich
+      dockerfile: Dockerfile
+    container_name: nrd-enrich
+    restart: always
+    depends_on:
+      - nrd
+    volumes:
+      - ./NRD-db/daily/:/opt/nrd/daily/:ro
+    environment:
+      - REDIS_HOST=nrd
+      - REDIS_PORT=6379
+      # Leave empty to keep VirusTotal enrichment disabled (default --
+      # every domain is marked vt_status=no_api_key and zero requests are
+      # made). Set a real key to enable it; free-tier coverage will still
+      # be a small daily slice, never all ~70k domains -- see README.
+      - VT_API_KEY=
+      # Uncomment/tune any of these to override enrich/config.py defaults:
+      # - DNS_CONCURRENCY=100
+      # - WHOIS_GLOBAL_CONCURRENCY=10
+      # - WHOIS_LOOKBACK_DAYS=3
+      # - CRT_MAX_CONCURRENCY=3
+      # - VT_REQ_PER_MIN=4
+      # - VT_REQ_PER_DAY=500
+      # - ENRICH_TTL_DAYS=180
+      # - LOG_LEVEL=INFO
+    mem_limit: 512m
+    cpus: 1.0
+#
+#
+#
